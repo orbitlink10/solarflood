@@ -30,6 +30,8 @@
         $websiteSchema = \App\Support\StructuredData::website();
         $menuCategories = \Illuminate\Support\Facades\Schema::hasTable('categories')
             ? \App\Models\Category::query()->whereNull('parent_id')->with('children')->orderBy('name')->get()
+                ->filter(fn (\App\Models\Category $menuCategory): bool => \App\Support\SolarFloodLightSeoCatalog::isSolarCategory($menuCategory))
+                ->values()
             : collect();
     @endphp
     <title>{!! $pageTitle !!}</title>

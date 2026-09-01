@@ -142,7 +142,9 @@ class StorefrontController extends Controller
         $categories = Category::query()
             ->whereNull('parent_id')
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->filter(fn (Category $category): bool => SolarFloodLightSeoCatalog::isSolarCategory($category))
+            ->values();
 
         $search = trim((string) $request->query('search', ''));
         $searchSlug = Str::slug($search);

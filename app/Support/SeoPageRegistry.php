@@ -322,7 +322,7 @@ class SeoPageRegistry
             $path = self::normalizePath($path);
             $definitions[$path]['path'] = $path;
             $definitions[$path]['registry_id'] = $definition['registry_id'] ?? trim(str_replace('/', '.', $path), '.') ?: 'home';
-            $definitions[$path]['slug'] = $definition['slug'] ?? Str::slug(basename($path) ?: 'home');
+            $definitions[$path]['slug'] = $definition['slug'] ?? (trim(str_replace('/', '-', trim($path, '/')), '-') ?: 'home');
             $definitions[$path]['canonical_path'] = $definition['canonical_path'] ?? $path;
             $definitions[$path]['status'] = $definition['status'] ?? 'planned';
             $definitions[$path]['indexable'] = (bool) ($definition['indexable'] ?? false);
