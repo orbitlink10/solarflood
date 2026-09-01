@@ -194,7 +194,7 @@ class StorefrontSearchTest extends TestCase
         }
     }
 
-    public function test_homepage_shows_two_router_product_rows_from_requested_category(): void
+    public function test_homepage_shows_two_flood_light_product_rows_from_authority_category(): void
     {
         $vendorUser = User::factory()->create([
             'role' => 'vendor',
@@ -204,35 +204,35 @@ class StorefrontSearchTest extends TestCase
 
         $vendor = Vendor::create([
             'user_id' => $vendorUser->id,
-            'shop_name' => 'Mikrotik Kenya Store',
-            'slug' => 'mikrotik-kenya-store',
-            'description' => 'Network and routing equipment.',
+            'shop_name' => 'Solar Flood Lights Kenya Store',
+            'slug' => 'solar-flood-lights-kenya-store',
+            'description' => 'Solar lighting products.',
             'phone' => '0712345678',
             'address' => 'Nairobi',
             'is_approved' => true,
         ]);
 
-        $routerCategory = Category::create([
-            'name' => 'Mikrotik Router Prices in Kenya',
-            'slug' => 'mikrotik-router-prices-in-kenya',
+        $floodCategory = Category::create([
+            'name' => 'Solar Flood Lights Price in Kenya',
+            'slug' => 'solar-flood-lights',
         ]);
 
         $otherCategory = Category::create([
-            'name' => 'Mikrotik Switch Prices in Kenya',
-            'slug' => 'mikrotik-switch-prices-in-kenya',
+            'name' => 'Solar Street Lights',
+            'slug' => 'solar-street-lights',
         ]);
 
         for ($index = 1; $index <= 9; $index++) {
             Product::create([
                 'vendor_id' => $vendor->id,
-                'category_id' => $routerCategory->id,
-                'name' => 'Mikrotik Router Model '.$index,
-                'slug' => 'mikrotik-router-model-'.$index,
-                'description' => '<p>Router model '.$index.' for homes and offices.</p>',
-                'meta_description' => 'Mikrotik router model '.$index.' price in Kenya.',
+                'category_id' => $floodCategory->id,
+                'name' => 'Solar Flood Light Model '.$index,
+                'slug' => 'solar-flood-light-model-'.$index,
+                'description' => '<p>Flood light model '.$index.' for homes and offices.</p>',
+                'meta_description' => 'Solar flood light model '.$index.' price in Kenya.',
                 'price' => (string) (10000 + $index),
                 'stock' => 5,
-                'sku' => 'ROUTER-'.$index,
+                'sku' => 'FLOOD-'.$index,
                 'status' => 'active',
                 'created_at' => now()->addMinutes($index),
                 'updated_at' => now()->addMinutes($index),
@@ -242,13 +242,13 @@ class StorefrontSearchTest extends TestCase
         Product::create([
             'vendor_id' => $vendor->id,
             'category_id' => $otherCategory->id,
-            'name' => 'Mikrotik Switch Outside Category',
-            'slug' => 'mikrotik-switch-outside-category',
-            'description' => '<p>Switch product.</p>',
-            'meta_description' => 'Switch product outside the router price category.',
+            'name' => 'Solar Street Light Outside Category',
+            'slug' => 'solar-street-light-outside-category',
+            'description' => '<p>Street light product.</p>',
+            'meta_description' => 'Street light product outside the flood light price category.',
             'price' => '22000.00',
             'stock' => 5,
-            'sku' => 'SWITCH-1',
+            'sku' => 'STREET-1',
             'status' => 'active',
         ]);
 
@@ -269,18 +269,18 @@ class StorefrontSearchTest extends TestCase
         $featuredSection = substr($content, $featuredStart, $featuredEnd - $featuredStart);
 
         $this->assertSame(6, substr_count($featuredSection, 'class="product-card"'));
-        $this->assertStringContainsString('MikroTik Router Model 9', $featuredSection);
-        $this->assertStringContainsString('MikroTik Router Model 4', $featuredSection);
-        $this->assertStringNotContainsString('MikroTik Router Model 3', $featuredSection);
-        $response->assertSee('MikroTik Router Model 3');
-        $response->assertSee('MikroTik Router Model 1');
-        $response->assertSee('MikroTik Switch Outside Category');
+        $this->assertStringContainsString('Solar Flood Light Model 9', $featuredSection);
+        $this->assertStringContainsString('Solar Flood Light Model 4', $featuredSection);
+        $this->assertStringNotContainsString('Solar Flood Light Model 3', $featuredSection);
+        $response->assertSee('Solar Flood Light Model 3');
+        $response->assertSee('Solar Flood Light Model 1');
+        $response->assertSee('Solar Street Light Outside Category');
         $response->assertSee('KES 10,009.00');
         $response->assertSee('product-desc', false);
         $response->assertDontSee('Page 1 of', false);
     }
 
-    public function test_homepage_keeps_router_rows_when_router_category_uses_legacy_slug(): void
+    public function test_homepage_keeps_flood_light_rows_when_authority_category_uses_legacy_slug(): void
     {
         $vendorUser = User::factory()->create([
             'role' => 'vendor',
@@ -290,29 +290,29 @@ class StorefrontSearchTest extends TestCase
 
         $vendor = Vendor::create([
             'user_id' => $vendorUser->id,
-            'shop_name' => 'Mikrotik Kenya Store',
-            'slug' => 'mikrotik-kenya-store',
-            'description' => 'Network and routing equipment.',
+            'shop_name' => 'Solar Flood Lights Kenya Store',
+            'slug' => 'solar-flood-lights-kenya-store',
+            'description' => 'Solar lighting products.',
             'phone' => '0712345678',
             'address' => 'Nairobi',
             'is_approved' => true,
         ]);
 
-        $routerCategory = Category::create([
-            'name' => 'mikrotik router',
-            'slug' => 'mikrotik-router',
+        $floodCategory = Category::create([
+            'name' => 'solar floodlights',
+            'slug' => 'solar-floodlights',
         ]);
 
         Product::create([
             'vendor_id' => $vendor->id,
-            'category_id' => $routerCategory->id,
-            'name' => 'Mikrotik Router Model',
-            'slug' => 'mikrotik-router-model',
-            'description' => '<p>Router model for homes and offices.</p>',
-            'meta_description' => 'Mikrotik router model price in Kenya.',
+            'category_id' => $floodCategory->id,
+            'name' => 'Solar Flood Light Model',
+            'slug' => 'solar-flood-light-model',
+            'description' => '<p>Flood light model for homes and offices.</p>',
+            'meta_description' => 'Solar flood light model price in Kenya.',
             'price' => '10000.00',
             'stock' => 5,
-            'sku' => 'ROUTER-LEGACY',
+            'sku' => 'FLOOD-LEGACY',
             'status' => 'active',
         ]);
 
@@ -320,12 +320,11 @@ class StorefrontSearchTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('products-grid--router-rows', false);
-        $response->assertSee('href="http://localhost/category/mikrotik-router-prices-in-kenya"', false);
-        $response->assertSee('MikroTik Router Prices in Kenya');
-        $response->assertSee('MikroTik Router Model');
+        $response->assertSee('href="http://localhost/category/solar-flood-lights"', false);
+        $response->assertSee('Solar Flood Light Model');
     }
 
-    public function test_primary_router_price_url_renders_when_only_legacy_router_category_exists(): void
+    public function test_primary_flood_light_price_url_renders_when_only_legacy_category_exists(): void
     {
         $vendorUser = User::factory()->create([
             'role' => 'vendor',
@@ -335,37 +334,37 @@ class StorefrontSearchTest extends TestCase
 
         $vendor = Vendor::create([
             'user_id' => $vendorUser->id,
-            'shop_name' => 'Mikrotik Kenya Store',
-            'slug' => 'mikrotik-kenya-store',
-            'description' => 'Network and routing equipment.',
+            'shop_name' => 'Solar Flood Lights Kenya Store',
+            'slug' => 'solar-flood-lights-kenya-store',
+            'description' => 'Solar lighting products.',
             'phone' => '0712345678',
             'address' => 'Nairobi',
             'is_approved' => true,
         ]);
 
-        $routerCategory = Category::create([
-            'name' => 'mikrotik router',
-            'slug' => 'mikrotik-router',
+        $floodCategory = Category::create([
+            'name' => 'solar floodlights',
+            'slug' => 'solar-floodlights',
         ]);
 
         Product::create([
             'vendor_id' => $vendor->id,
-            'category_id' => $routerCategory->id,
-            'name' => 'Mikrotik Router Model',
-            'slug' => 'mikrotik-router-model',
-            'description' => '<p>Router model for homes and offices.</p>',
-            'meta_description' => 'Mikrotik router model price in Kenya.',
+            'category_id' => $floodCategory->id,
+            'name' => 'Solar Flood Light Model',
+            'slug' => 'solar-flood-light-model',
+            'description' => '<p>Flood light model for homes and offices.</p>',
+            'meta_description' => 'Solar flood light model price in Kenya.',
             'price' => '10000.00',
             'stock' => 5,
-            'sku' => 'ROUTER-LEGACY',
+            'sku' => 'FLOOD-LEGACY',
             'status' => 'active',
         ]);
 
-        $response = $this->get('/category/mikrotik-router-prices-in-kenya');
+        $response = $this->get('/category/solar-flood-lights');
 
         $response->assertOk();
-        $response->assertSee('<link rel="canonical" href="http://localhost/category/mikrotik-router-prices-in-kenya">', false);
-        $response->assertSee('MikroTik Router Model');
+        $response->assertSee('<link rel="canonical" href="https://solarfloodlights.co.ke/category/solar-flood-lights">', false);
+        $response->assertSee('Solar Flood Light Model');
     }
 
     /**

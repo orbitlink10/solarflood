@@ -8,7 +8,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\User;
 use App\Models\Vendor;
-use App\Support\MikrotikSeoCatalog;
+use App\Support\SolarFloodLightSeoCatalog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -21,103 +21,104 @@ class SeoEnhancementTest extends TestCase
     {
         parent::setUp();
 
-        config(['app.canonical_url' => 'https://mikrotikkenya.co.ke']);
+        config(['app.canonical_url' => 'https://solarfloodlights.co.ke']);
     }
 
     public function test_product_page_outputs_dynamic_metadata_and_schema(): void
     {
         $product = $this->createProduct([
-            'name' => 'MikroTik RB5009UPr+S+IN',
-            'slug' => 'mikrotik-rb5009upr-s-in',
-            'sku' => 'RB5009UPr+S+IN',
-            'model_number' => 'RB5009UPr+S+IN',
-            'price' => '56000.00',
+            'name' => 'ALLTOP 200W Solar Flood Light',
+            'slug' => 'alltop-200w-solar-flood-light',
+            'sku' => 'ALLTOP-200W',
+            'model_number' => 'ALLTOP 200W Solar Flood Light',
+            'brand' => 'ALLTOP',
+            'price' => '12500.00',
             'faq_items' => [
-                ['question' => 'Does RB5009 support PoE?', 'answer' => 'Confirm PoE input and output requirements against the specific RB5009 variant before purchase.'],
+                ['question' => 'Does it include a battery?', 'answer' => 'Confirm the package contents on the product page before ordering.'],
             ],
         ]);
 
         $response = $this->get('/product/'.$product->slug);
 
         $response->assertOk();
-        $response->assertSee('<title>RB5009UPr+S+IN Price in Kenya | MikroTik Router</title>', false);
+        $response->assertSee('ALLTOP 200W Solar Flood Light Price in Kenya', false);
         $response->assertSee('"@type":"Product"', false);
         $response->assertSee('"priceCurrency":"KES"', false);
-        $response->assertSee('"price":"56000.00"', false);
+        $response->assertSee('"price":"12500.00"', false);
         $response->assertSee('"availability":"https://schema.org/InStock"', false);
         $response->assertSee('"@type":"BreadcrumbList"', false);
         $response->assertSee('"@type":"FAQPage"', false);
         $response->assertSee('Who is this product best for?');
-        $response->assertSee('Does RB5009 support PoE?');
+        $response->assertSee('Does it include a battery?');
     }
 
-    public function test_router_authority_category_has_dynamic_price_table_and_faq_schema(): void
+    public function test_flood_light_authority_category_has_dynamic_price_table_and_faq_schema(): void
     {
         $category = Category::create([
-            'name' => 'MikroTik Router Prices in Kenya',
-            'slug' => MikrotikSeoCatalog::ROUTER_AUTHORITY_SLUG,
-            'meta_description' => 'Router price guide.',
-            'description' => '<p>Router buying guide.</p>',
+            'name' => 'Solar Flood Lights Price in Kenya',
+            'slug' => SolarFloodLightSeoCatalog::PRICE_AUTHORITY_SLUG,
+            'meta_description' => 'Solar flood light price guide.',
+            'description' => '<p>Solar flood light buying guide.</p>',
         ]);
 
         $product = $this->createProduct([
             'category_id' => $category->id,
-            'name' => 'MikroTik RB4011iGS+RM',
-            'slug' => 'mikrotik-rb4011igs-rm',
-            'sku' => 'RB4011iGS+RM',
-            'price' => '29000.00',
+            'name' => 'ALLTOP 200W Solar Flood Light',
+            'slug' => 'alltop-200w-solar-flood-light',
+            'sku' => 'ALLTOP-200W',
+            'price' => '12500.00',
         ]);
 
-        $response = $this->get('/category/'.MikrotikSeoCatalog::ROUTER_AUTHORITY_SLUG);
+        $response = $this->get('/category/'.SolarFloodLightSeoCatalog::PRICE_AUTHORITY_SLUG);
 
         $response->assertOk();
-        $response->assertSee('MikroTik router price list in Kenya');
+        $response->assertSee('Solar flood light price list in Kenya');
         $response->assertSee(route('product.show', $product), false);
-        $response->assertSee('KSh 29,000.00');
-        $response->assertSee('How to choose a MikroTik router');
+        $response->assertSee('KSh 12,500.00');
+        $response->assertSee('How to choose a solar flood light');
         $response->assertSee('"@type":"FAQPage"', false);
     }
 
-    public function test_legacy_router_category_redirects_to_primary_router_page(): void
+    public function test_legacy_category_redirects_to_primary_flood_light_page(): void
     {
         Category::create([
-            'name' => 'MikroTik Router Prices in Kenya',
-            'slug' => MikrotikSeoCatalog::ROUTER_AUTHORITY_SLUG,
+            'name' => 'Solar Flood Lights Price in Kenya',
+            'slug' => SolarFloodLightSeoCatalog::PRICE_AUTHORITY_SLUG,
         ]);
 
         Category::create([
-            'name' => 'Mikrotik wired routers price in Kenya',
-            'slug' => 'mikrotik-wired-routers-price-in-kenya',
+            'name' => 'Solar floodlights',
+            'slug' => 'solar-floodlights',
         ]);
 
-        $this->get('/category/mikrotik-wired-routers-price-in-kenya')
-            ->assertRedirect('/category/'.MikrotikSeoCatalog::ROUTER_AUTHORITY_SLUG);
+        $this->get('/category/solar-floodlights')
+            ->assertRedirect('/category/'.SolarFloodLightSeoCatalog::PRICE_AUTHORITY_SLUG);
     }
 
-    public function test_broad_mikrotik_category_uses_relevant_catalog_fallback(): void
+    public function test_broad_solar_category_uses_relevant_catalog_fallback(): void
     {
         $broadCategory = Category::create([
-            'name' => 'Mikrotik',
-            'slug' => 'mikrotik',
-            'description' => '<p>All MikroTik product groups.</p>',
+            'name' => 'Solar Lights',
+            'slug' => 'solar-lights',
+            'description' => '<p>All solar lighting product groups.</p>',
         ]);
 
-        $routerCategory = Category::create([
-            'name' => 'MikroTik Router Prices in Kenya',
-            'slug' => MikrotikSeoCatalog::ROUTER_AUTHORITY_SLUG,
+        $floodCategory = Category::create([
+            'name' => 'Solar Flood Lights Price in Kenya',
+            'slug' => SolarFloodLightSeoCatalog::PRICE_AUTHORITY_SLUG,
         ]);
 
         $product = $this->createProduct([
-            'category_id' => $routerCategory->id,
-            'name' => 'MikroTik hEX S',
-            'slug' => 'mikrotik-hex-s',
-            'sku' => 'RB760iGS',
+            'category_id' => $floodCategory->id,
+            'name' => 'ALLTOP 200W Solar Flood Light',
+            'slug' => 'alltop-200w-solar-flood-light',
+            'sku' => 'ALLTOP-200W',
         ]);
 
         $response = $this->get('/category/'.$broadCategory->slug);
 
         $response->assertOk();
-        $response->assertSee('Showing relevant MikroTik products from the wider catalogue');
+        $response->assertSee('Showing relevant solar lighting products from the wider catalogue');
         $response->assertSee($product->name);
         $response->assertDontSee('No products found.');
     }
@@ -125,34 +126,34 @@ class SeoEnhancementTest extends TestCase
     public function test_sitemap_includes_canonical_public_urls_and_excludes_private_paths(): void
     {
         $category = Category::create([
-            'name' => 'MikroTik Switches',
-            'slug' => 'mikrotik-switches',
+            'name' => 'Solar Flood Lights',
+            'slug' => 'solar-flood-lights',
         ]);
 
         $product = $this->createProduct([
             'category_id' => $category->id,
-            'name' => 'MikroTik CRS326-24G-2S+RM',
-            'slug' => 'mikrotik-crs326-24g-2s-rm',
-            'sku' => 'CRS326-24G-2S+RM',
+            'name' => '100W Solar Flood Light',
+            'slug' => '100w-solar-flood-light',
+            'sku' => 'SFL-100W',
         ]);
 
         Page::create([
-            'meta_title' => 'RouterOS Guide',
-            'meta_description' => 'RouterOS guide for buyers.',
-            'title' => 'RouterOS Guide',
-            'heading_two' => 'RouterOS',
-            'slug' => 'routeros-guide',
+            'meta_title' => 'Solar Flood Light Buying Guide',
+            'meta_description' => 'A buying guide for solar flood lights in Kenya.',
+            'title' => 'Solar Flood Light Buying Guide',
+            'heading_two' => 'Solar Flood Lights',
+            'slug' => 'solar-flood-light-buying-guide',
             'type' => 'post',
-            'body' => '<p>RouterOS content.</p>',
+            'body' => '<p>Solar flood light buying guidance.</p>',
         ]);
 
         $response = $this->get('/sitemap.xml');
 
         $response->assertOk();
         $response->assertHeader('Content-Type', 'application/xml');
-        $response->assertSee('https://mikrotikkenya.co.ke/category/mikrotik-switches', false);
-        $response->assertSee('https://mikrotikkenya.co.ke/product/'.$product->slug, false);
-        $response->assertSee('https://mikrotikkenya.co.ke/routeros-guide', false);
+        $response->assertSee('https://solarfloodlights.co.ke/category/solar-flood-lights', false);
+        $response->assertSee('https://solarfloodlights.co.ke/product/'.$product->slug, false);
+        $response->assertSee('https://solarfloodlights.co.ke/solar-flood-light-buying-guide', false);
         $response->assertDontSee('/admin', false);
         $response->assertDontSee('/checkout', false);
     }
@@ -165,38 +166,38 @@ class SeoEnhancementTest extends TestCase
         $response = $this->get('/contact-us');
 
         $response->assertOk();
-        $response->assertSee('Contact Mikrotik Kenya');
-        $response->assertSee('<link rel="canonical" href="https://mikrotikkenya.co.ke/contact-us">', false);
-        $response->assertDontSee('Official'.' MikroTik'.' Store');
+        $response->assertSee('Contact Solar Flood Lights Kenya');
+        $response->assertSee('<link rel="canonical" href="https://solarfloodlights.co.ke/contact-us">', false);
+        $response->assertDontSee('Official'.' Solar Flood Lights'.' Store');
     }
 
     public function test_known_comparison_page_requires_both_products_and_links_to_them(): void
     {
         $category = Category::create([
-            'name' => 'MikroTik Router Prices in Kenya',
-            'slug' => MikrotikSeoCatalog::ROUTER_AUTHORITY_SLUG,
+            'name' => 'Solar Flood Lights Price in Kenya',
+            'slug' => SolarFloodLightSeoCatalog::PRICE_AUTHORITY_SLUG,
         ]);
 
-        $rb4011 = $this->createProduct([
+        $product100w = $this->createProduct([
             'category_id' => $category->id,
-            'name' => 'MikroTik RB4011iGS+RM',
-            'slug' => 'mikrotik-rb4011igs-rm',
-            'sku' => 'RB4011iGS+RM',
+            'name' => '100W Solar Flood Light',
+            'slug' => '100w-solar-flood-light',
+            'sku' => 'SFL-100W',
         ]);
 
-        $rb5009 = $this->createProduct([
+        $product200w = $this->createProduct([
             'category_id' => $category->id,
-            'name' => 'MikroTik RB5009UG+S+IN',
-            'slug' => 'mikrotik-rb5009ug-s-in',
-            'sku' => 'RB5009UG+S+IN',
+            'name' => '200W Solar Flood Light',
+            'slug' => '200w-solar-flood-light',
+            'sku' => 'SFL-200W',
         ]);
 
-        $response = $this->get('/compare/rb4011-vs-rb5009');
+        $response = $this->get('/compare/100w-vs-200w-solar-flood-light');
 
         $response->assertOk();
-        $response->assertSee('RB4011 vs RB5009');
-        $response->assertSee(route('product.show', $rb4011), false);
-        $response->assertSee(route('product.show', $rb5009), false);
+        $response->assertSee('100W vs 200W Solar Flood Light');
+        $response->assertSee(route('product.show', $product100w), false);
+        $response->assertSee(route('product.show', $product200w), false);
     }
 
     public function test_seo_audit_command_is_safe_to_run(): void
@@ -214,8 +215,8 @@ class SeoEnhancementTest extends TestCase
         $category = Category::find($attributes['category_id'] ?? null)
             ?? Category::first()
             ?? Category::create([
-                'name' => 'MikroTik Routers',
-                'slug' => MikrotikSeoCatalog::ROUTER_AUTHORITY_SLUG,
+                'name' => 'Solar Flood Lights',
+                'slug' => SolarFloodLightSeoCatalog::PRICE_AUTHORITY_SLUG,
             ]);
 
         $vendorUser = User::factory()->create([
@@ -226,9 +227,9 @@ class SeoEnhancementTest extends TestCase
 
         $vendor = Vendor::create([
             'user_id' => $vendorUser->id,
-            'shop_name' => 'Mikrotik Kenya Store '.$vendorUser->id,
-            'slug' => 'mikrotik-kenya-store-'.$vendorUser->id,
-            'description' => 'Network and routing equipment.',
+            'shop_name' => 'Solar Flood Lights Kenya Store '.$vendorUser->id,
+            'slug' => 'solar-flood-lights-kenya-store-'.$vendorUser->id,
+            'description' => 'Solar lighting products.',
             'phone' => '0712345678',
             'address' => 'Nairobi',
             'is_approved' => true,
@@ -237,13 +238,13 @@ class SeoEnhancementTest extends TestCase
         $product = Product::create(array_merge([
             'vendor_id' => $vendor->id,
             'category_id' => $category->id,
-            'name' => 'MikroTik Router',
-            'slug' => 'mikrotik-router',
-            'description' => '<p>Reliable routing hardware for Kenyan networks.</p>',
+            'name' => 'Solar Flood Light',
+            'slug' => 'solar-flood-light',
+            'description' => '<p>Reliable solar lighting for Kenyan homes and businesses.</p>',
             'meta_description' => null,
-            'price' => '20000.00',
+            'price' => '12000.00',
             'stock' => 5,
-            'sku' => 'ROUTER',
+            'sku' => 'SFL-DEFAULT',
             'status' => 'active',
         ], $attributes, [
             'vendor_id' => $vendor->id,

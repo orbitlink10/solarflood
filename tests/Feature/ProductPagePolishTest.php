@@ -57,8 +57,8 @@ class ProductPagePolishTest extends TestCase
 
         HomepageContent::create([
             'site_key' => HomepageContent::DEFAULT_SITE_KEY,
-            'hero_title' => 'MikroTik Kenya',
-            'hero_description' => 'Networking equipment in Kenya.',
+            'hero_title' => 'Solar Flood Lights Kenya',
+            'hero_description' => 'Solar lighting in Kenya.',
             'site_logo_path' => 'uploads/homepage-content/missing-logo.png',
         ]);
 
@@ -67,7 +67,7 @@ class ProductPagePolishTest extends TestCase
         $response = $this->get('/');
         $response->assertOk();
         $response->assertDontSee('missing-logo.png', false);
-        $response->assertSee('Mikrotik Kenya');
+        $response->assertSee('Solar Flood Lights Kenya');
     }
 
     public function test_logo_falls_back_to_an_existing_uploaded_logo_file(): void

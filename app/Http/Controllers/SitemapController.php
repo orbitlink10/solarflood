@@ -6,7 +6,7 @@ use App\Models\Category;
 use App\Models\Page;
 use App\Models\Product;
 use App\Support\CanonicalUrl;
-use App\Support\SeoMetadata;
+use App\Support\SeoIndexing;
 use App\Support\SolarFloodLightSeoCatalog;
 use Illuminate\Http\Response;
 
@@ -24,9 +24,9 @@ class SitemapController extends Controller
 
         $categoryUrls = Category::query()
             ->whereNotIn('slug', array_keys(SolarFloodLightSeoCatalog::legacyCategoryRedirects()))
-            ->when(SeoMetadata::columnReady('categories', 'robots'), fn ($query) => $query->where(fn ($robotsQuery) => $robotsQuery->whereNull('robots')->orWhere('robots', 'not like', 'noindex%')))
             ->orderBy('updated_at', 'desc')
             ->get()
+            ->filter(fn (Category $category): bool => SeoIndexing::sitemapEligible($category))
             ->map(fn (Category $category): array => [
                 'loc' => CanonicalUrl::route('category.show', $category),
                 'lastmod' => optional($category->updated_at)->toDateString(),
@@ -35,9 +35,9 @@ class SitemapController extends Controller
 
         $productUrls = Product::query()
             ->active()
-            ->when(SeoMetadata::columnReady('products', 'robots'), fn ($query) => $query->where(fn ($robotsQuery) => $robotsQuery->whereNull('robots')->orWhere('robots', 'not like', 'noindex%')))
             ->orderBy('updated_at', 'desc')
             ->get()
+            ->filter(fn (Product $product): bool => SeoIndexing::sitemapEligible($product))
             ->map(fn (Product $product): array => [
                 'loc' => CanonicalUrl::route('product.show', $product),
                 'lastmod' => optional($product->updated_at)->toDateString(),
@@ -45,9 +45,9 @@ class SitemapController extends Controller
             ]);
 
         $pageUrls = Page::query()
-            ->when(SeoMetadata::columnReady('pages', 'robots'), fn ($query) => $query->where(fn ($robotsQuery) => $robotsQuery->whereNull('robots')->orWhere('robots', 'not like', 'noindex%')))
             ->orderBy('updated_at', 'desc')
             ->get()
+            ->filter(fn (Page $page): bool => SeoIndexing::sitemapEligible($page))
             ->map(fn (Page $page): array => [
                 'loc' => CanonicalUrl::route('pages.show', $page),
                 'lastmod' => optional($page->updated_at)->toDateString(),

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    $description = 'Compare ' . $title . ' for MikroTik buyers in Kenya, including current catalogue prices, stock status, SKU and category links.';
+    $description = 'Compare ' . $title . ' for solar lighting buyers in Kenya, including current catalogue prices, stock status and product details.';
     $breadcrumbSchema = \App\Support\StructuredData::breadcrumbs([
         ['name' => 'Home', 'url' => \App\Support\CanonicalUrl::route('home')],
         ['name' => $title, 'url' => $canonicalUrl],
@@ -9,10 +9,10 @@
     $productImageFallback = \App\Support\ProductImageCatalog::placeholderUrl();
 @endphp
 
-@section('title', $title . ' | MikroTik Kenya')
+@section('title', $title . ' | Solar Flood Lights Kenya')
 @section('meta_description', $description)
 @section('canonical_url', $canonicalUrl)
-@section('og_title', $title . ' | MikroTik Kenya')
+@section('og_title', $title . ' | Solar Flood Lights Kenya')
 @section('og_description', $description)
 
 @push('head')
@@ -28,7 +28,7 @@
     </nav>
 
     <section class="panel comparison-head">
-        <p class="catalog-search-eyebrow">MikroTik comparison</p>
+        <p class="catalog-search-eyebrow">Solar lighting comparison</p>
         <h1>{{ $title }}</h1>
         <p>{{ $description }}</p>
     </section>

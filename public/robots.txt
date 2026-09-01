@@ -9,4 +9,4 @@ Allow: /assets/
 Allow: /build/
 Allow: /uploads/
 
-Sitemap: https://mikrotikkenya.co.ke/sitemap.xml
+Sitemap: https://solarfloodlights.co.ke/sitemap.xml

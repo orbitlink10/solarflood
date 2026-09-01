@@ -36,7 +36,7 @@ class StructuredData
                     : 'https://schema.org/OutOfStock',
                 'seller' => [
                     '@type' => 'Organization',
-                    'name' => config('business.name', config('app.name', 'Mikrotik Kenya')),
+                    'name' => config('business.name', config('app.name', 'Solar Flood Lights Kenya')),
                 ],
             ],
         ];
@@ -186,7 +186,7 @@ class StructuredData
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'Organization',
-            'name' => config('business.name', config('app.name', 'Mikrotik Kenya')),
+            'name' => config('business.name', config('app.name', 'Solar Flood Lights Kenya')),
             'url' => CanonicalUrl::normalize('/'),
         ];
         if (config('business.legal_name')) {
@@ -226,7 +226,7 @@ class StructuredData
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'WebSite',
-            'name' => config('app.name', 'Mikrotik Kenya'),
+            'name' => config('app.name', 'Solar Flood Lights Kenya'),
             'url' => CanonicalUrl::normalize('/'),
         ];
 

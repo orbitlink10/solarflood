@@ -151,8 +151,11 @@ class AdminController extends Controller
     {
         return [
             'seo_title' => ['nullable', 'string', 'max:180'],
+            'primary_keyword' => ['nullable', 'string', 'max:180'],
             'canonical_url' => ['nullable', 'url', 'max:255'],
             'robots' => ['nullable', Rule::in(['index,follow', 'noindex,follow'])],
+            'schema_type' => ['nullable', 'string', 'max:80'],
+            'sitemap_enabled' => ['nullable', 'in:0,1'],
             'og_title' => ['nullable', 'string', 'max:180'],
             'og_description' => ['nullable', 'string', 'max:255'],
             'og_image' => ['nullable', 'url', 'max:255'],
@@ -170,8 +173,11 @@ class AdminController extends Controller
     {
         return [
             'seo_title' => $this->cleanOptionalText($data['seo_title'] ?? null, 180),
+            'primary_keyword' => $this->cleanOptionalText($data['primary_keyword'] ?? null, 180),
             'canonical_url' => $this->cleanOptionalText($data['canonical_url'] ?? null, 255),
             'robots' => $this->cleanOptionalText($data['robots'] ?? null, 40),
+            'schema_type' => $this->cleanOptionalText($data['schema_type'] ?? null, 80),
+            'sitemap_enabled' => $this->normalizeSitemapEnabled($data['sitemap_enabled'] ?? null),
             'og_title' => $this->cleanOptionalText($data['og_title'] ?? null, 180),
             'og_description' => ProductContent::sanitizeMetaDescription($data['og_description'] ?? null),
             'og_image' => $this->cleanOptionalText($data['og_image'] ?? null, 255),
@@ -208,6 +214,15 @@ class AdminController extends Controller
         }
 
         return array_slice($normalized, 0, 12);
+    }
+
+    private function normalizeSitemapEnabled(mixed $value): bool
+    {
+        if ($value === null || $value === '') {
+            return true;
+        }
+
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
     private function validateTestimonialData(Request $request): array

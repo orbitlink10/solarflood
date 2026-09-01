@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StorefrontController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/sitemap_index.xml', SitemapController::class)->name('sitemap.index');
 Route::get('/compare/{comparison}', [ComparisonController::class, 'show'])
     ->where('comparison', implode('|', array_keys(SolarFloodLightSeoCatalog::comparisonPages())))
     ->name('comparison.show');

@@ -207,6 +207,9 @@
                             <label class="admin-product-label" for="seo_title">SEO title</label>
                             <input class="admin-product-input" id="seo_title" type="text" name="seo_title" value="{{ old('seo_title', $categoryToEdit?->seo_title) }}" maxlength="180">
 
+                            <label class="admin-product-label" for="primary_keyword">Primary keyword</label>
+                            <input class="admin-product-input" id="primary_keyword" type="text" name="primary_keyword" value="{{ old('primary_keyword', $categoryToEdit?->primary_keyword) }}" maxlength="180" placeholder="e.g. solar flood lights price in Kenya">
+
                             <label class="admin-product-label" for="canonical_url">Canonical URL override</label>
                             <input class="admin-product-input" id="canonical_url" type="url" name="canonical_url" value="{{ old('canonical_url', $categoryToEdit?->canonical_url) }}" placeholder="Leave empty to use the category URL">
 
@@ -215,6 +218,15 @@
                                 <option value="" @selected(old('robots', $categoryToEdit?->robots) === null)>Use default</option>
                                 <option value="index,follow" @selected(old('robots', $categoryToEdit?->robots) === 'index,follow')>Index, follow</option>
                                 <option value="noindex,follow" @selected(old('robots', $categoryToEdit?->robots) === 'noindex,follow')>Noindex, follow</option>
+                            </select>
+
+                            <label class="admin-product-label" for="schema_type">Schema type</label>
+                            <input class="admin-product-input" id="schema_type" type="text" name="schema_type" value="{{ old('schema_type', $categoryToEdit?->schema_type) }}" maxlength="80" placeholder="CollectionPage">
+
+                            <label class="admin-product-label" for="sitemap_enabled">XML sitemap</label>
+                            <select class="admin-product-input admin-product-select" id="sitemap_enabled" name="sitemap_enabled">
+                                <option value="1" @selected((string) old('sitemap_enabled', $categoryToEdit?->sitemap_enabled) === '1')>Include in sitemap</option>
+                                <option value="0" @selected((string) old('sitemap_enabled', $categoryToEdit?->sitemap_enabled) === '0')>Exclude from sitemap</option>
                             </select>
 
                             <label class="admin-product-label" for="og_title">Open Graph title</label>

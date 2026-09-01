@@ -19,7 +19,7 @@ class SeoCanonicalTest extends TestCase
     {
         parent::setUp();
 
-        config(['app.canonical_url' => 'https://mikrotikkenya.co.ke']);
+        config(['app.canonical_url' => 'https://solarfloodlights.co.ke']);
     }
 
     public function test_homepage_has_self_referencing_canonical_url(): void
@@ -27,8 +27,8 @@ class SeoCanonicalTest extends TestCase
         $response = $this->get('/');
 
         $response->assertOk();
-        $response->assertSee('<title>MikroTik Kenya | Routers, Switches &amp; Networking Equipment</title>', false);
-        $response->assertSee('<link rel="canonical" href="https://mikrotikkenya.co.ke/">', false);
+        $response->assertSee('<title>Solar Flood Lights Kenya | Best Prices &amp; Fast Delivery</title>', false);
+        $response->assertSee('<link rel="canonical" href="https://solarfloodlights.co.ke/">', false);
     }
 
     public function test_search_results_are_noindexed_and_canonical_to_catalog_root(): void
@@ -42,7 +42,7 @@ class SeoCanonicalTest extends TestCase
         $response = $this->get('/?search=5009');
 
         $response->assertOk();
-        $response->assertSee('<link rel="canonical" href="https://mikrotikkenya.co.ke/">', false);
+        $response->assertSee('<link rel="canonical" href="https://solarfloodlights.co.ke/">', false);
         $response->assertSee('<meta name="robots" content="noindex,follow">', false);
     }
 
@@ -65,7 +65,7 @@ class SeoCanonicalTest extends TestCase
         $response = $this->get('/category/mikrotik-ethernet-routers?page=2');
 
         $response->assertOk();
-        $response->assertSee('<link rel="canonical" href="https://mikrotikkenya.co.ke/category/mikrotik-ethernet-routers?page=2">', false);
+        $response->assertSee('<link rel="canonical" href="https://solarfloodlights.co.ke/category/mikrotik-ethernet-routers?page=2">', false);
     }
 
     public function test_product_and_public_page_have_canonical_urls(): void
@@ -87,11 +87,11 @@ class SeoCanonicalTest extends TestCase
 
         $this->get('/product/'.$product->slug)
             ->assertOk()
-            ->assertSee('<link rel="canonical" href="https://mikrotikkenya.co.ke/product/mikrotik-rb4011igsrm">', false);
+            ->assertSee('<link rel="canonical" href="https://solarfloodlights.co.ke/product/mikrotik-rb4011igsrm">', false);
 
         $this->get('/'.$page->slug)
             ->assertOk()
-            ->assertSee('<link rel="canonical" href="https://mikrotikkenya.co.ke/starlink-in-kenya">', false);
+            ->assertSee('<link rel="canonical" href="https://solarfloodlights.co.ke/starlink-in-kenya">', false);
 
         $this->get('/pages/'.$page->slug)
             ->assertStatus(301)
