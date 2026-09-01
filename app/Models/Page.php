@@ -13,6 +13,7 @@ class Page extends Model
     protected $fillable = [
         'meta_title',
         'meta_description',
+        'primary_keyword',
         'title',
         'heading_two',
         'slug',
@@ -26,11 +27,14 @@ class Page extends Model
         'og_title',
         'og_description',
         'og_image',
+        'schema_type',
+        'sitemap_enabled',
         'faq_items',
     ];
 
     protected $casts = [
         'faq_items' => 'array',
+        'sitemap_enabled' => 'boolean',
     ];
 
     public static function storageReady(): bool
@@ -49,7 +53,10 @@ class Page extends Model
 
         return Schema::hasTable($table)
             && Schema::hasColumn($table, 'seo_title')
+            && Schema::hasColumn($table, 'primary_keyword')
             && Schema::hasColumn($table, 'canonical_url')
+            && Schema::hasColumn($table, 'schema_type')
+            && Schema::hasColumn($table, 'sitemap_enabled')
             && Schema::hasColumn($table, 'faq_items');
     }
 }

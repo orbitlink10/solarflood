@@ -15,6 +15,7 @@ class Category extends Model
     protected $fillable = [
         'name',
         'meta_description',
+        'primary_keyword',
         'slug',
         'parent_id',
         'image_url',
@@ -25,6 +26,8 @@ class Category extends Model
         'og_title',
         'og_description',
         'og_image',
+        'schema_type',
+        'sitemap_enabled',
         'intro',
         'seo_content',
         'faq_items',
@@ -32,6 +35,7 @@ class Category extends Model
 
     protected $casts = [
         'faq_items' => 'array',
+        'sitemap_enabled' => 'boolean',
     ];
 
     public static function contentFieldsReady(): bool
@@ -49,7 +53,10 @@ class Category extends Model
 
         return Schema::hasTable($table)
             && Schema::hasColumn($table, 'seo_title')
+            && Schema::hasColumn($table, 'primary_keyword')
             && Schema::hasColumn($table, 'canonical_url')
+            && Schema::hasColumn($table, 'schema_type')
+            && Schema::hasColumn($table, 'sitemap_enabled')
             && Schema::hasColumn($table, 'intro')
             && Schema::hasColumn($table, 'seo_content')
             && Schema::hasColumn($table, 'faq_items');

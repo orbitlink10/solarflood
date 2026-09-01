@@ -3,7 +3,9 @@
 namespace App\Support;
 
 use App\Models\HomepageContent;
+use App\Models\Page;
 use App\Models\Product;
+use Illuminate\Support\Collection;
 
 class StructuredData
 {
@@ -58,6 +60,100 @@ class StructuredData
                 array_values($items),
                 array_keys(array_values($items))
             ),
+        ];
+    }
+
+    /**
+     * @param  Collection<int, Product>  $products
+     */
+    public static function collectionPage(string $name, string $description, string $url, Collection $products): array
+    {
+        $schema = self::webPage('CollectionPage', $name, $description, $url);
+
+        if ($products->isNotEmpty()) {
+            $schema['mainEntity'] = self::itemList($products, $url);
+        }
+
+        return $schema;
+    }
+
+    /**
+     * @param  Collection<int, Product>  $products
+     */
+    public static function itemList(Collection $products, string $pageUrl): array
+    {
+        return [
+            '@type' => 'ItemList',
+            'url' => $pageUrl,
+            'numberOfItems' => $products->count(),
+            'itemListElement' => $products->values()->map(fn (Product $product, int $index): array => [
+                '@type' => 'ListItem',
+                'position' => $index + 1,
+                'url' => CanonicalUrl::route('product.show', $product),
+                'name' => ProductSeo::displayName($product),
+            ])->all(),
+        ];
+    }
+
+    public static function webPage(string $type, string $name, string $description, string $url): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => $type,
+            'name' => $name,
+            'description' => $description,
+            'url' => $url,
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => config('app.name', 'Solar Flood Lights Kenya'),
+                'url' => CanonicalUrl::normalize('/'),
+            ],
+        ];
+    }
+
+    public static function article(Page $page, string $description, string $url): array
+    {
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => SeoMetadata::schemaType($page) ?: 'BlogPosting',
+            'headline' => $page->title,
+            'description' => $description,
+            'url' => $url,
+            'dateModified' => optional($page->updated_at)->toAtomString(),
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => config('business.name', config('app.name', 'Solar Flood Lights Kenya')),
+            ],
+        ];
+
+        if ($page->created_at) {
+            $schema['datePublished'] = $page->created_at->toAtomString();
+        }
+
+        if ($page->image_url) {
+            $schema['image'] = [CanonicalUrl::absoluteAsset($page->image_url)];
+        }
+
+        return array_filter($schema, fn (mixed $value): bool => $value !== null && $value !== '');
+    }
+
+    public static function service(Page $page, string $description, string $url): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'Service',
+            'name' => $page->title,
+            'description' => $description,
+            'url' => $url,
+            'provider' => [
+                '@type' => 'Organization',
+                'name' => config('business.name', config('app.name', 'Solar Flood Lights Kenya')),
+                'url' => CanonicalUrl::normalize('/'),
+            ],
+            'areaServed' => [
+                '@type' => 'Country',
+                'name' => 'Kenya',
+            ],
         ];
     }
 

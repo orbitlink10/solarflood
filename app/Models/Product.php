@@ -20,6 +20,7 @@ class Product extends Model
         'slug',
         'description',
         'meta_description',
+        'primary_keyword',
         'price',
         'compare_at_price',
         'stock',
@@ -31,6 +32,8 @@ class Product extends Model
         'og_title',
         'og_description',
         'og_image',
+        'schema_type',
+        'sitemap_enabled',
         'model_number',
         'brand',
         'key_use',
@@ -58,6 +61,7 @@ class Product extends Model
         'faq_items' => 'array',
         'official_gallery_images' => 'array',
         'official_media_synced_at' => 'datetime',
+        'sitemap_enabled' => 'boolean',
     ];
 
     public function getRouteKeyName(): string
@@ -71,6 +75,9 @@ class Product extends Model
 
         return Schema::hasTable($table)
             && Schema::hasColumn($table, 'seo_title')
+            && Schema::hasColumn($table, 'primary_keyword')
+            && Schema::hasColumn($table, 'schema_type')
+            && Schema::hasColumn($table, 'sitemap_enabled')
             && Schema::hasColumn($table, 'model_number')
             && Schema::hasColumn($table, 'faq_items');
     }

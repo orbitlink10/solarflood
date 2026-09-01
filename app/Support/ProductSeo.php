@@ -14,6 +14,11 @@ class ProductSeo
             ?: config('app.name', 'Solar Flood Lights Kenya');
     }
 
+    public static function isSolarLightingProduct(Product $product): bool
+    {
+        return SolarFloodLightSeoCatalog::productIntentSlug($product) !== null;
+    }
+
     public static function displayName(Product $product): string
     {
         $name = trim(preg_replace('/\s+/u', ' ', $product->name) ?? $product->name);
@@ -38,13 +43,10 @@ class ProductSeo
     {
         return match (SolarFloodLightSeoCatalog::productIntentSlug($product)) {
             SolarFloodLightSeoCatalog::PRICE_AUTHORITY_SLUG => 'Solar Flood Light',
-            'outdoor-solar-flood-lights' => 'Outdoor Solar Flood Light',
-            'motion-sensor-solar-lights' => 'Motion Sensor Solar Light',
+            'solar-outdoor-lights' => 'Outdoor Solar Light',
+            'solar-motion-sensor-lights' => 'Motion Sensor Solar Light',
             'solar-street-lights' => 'Solar Street Light',
             'solar-security-lights' => 'Solar Security Light',
-            'solar-garden-wall-lights' => 'Solar Garden Light',
-            'solar-panels-batteries' => 'Solar Lighting Power Part',
-            'solar-lighting-accessories' => 'Solar Lighting Accessory',
             default => 'Solar Lighting',
         };
     }
@@ -56,13 +58,10 @@ class ProductSeo
         }
 
         return match (SolarFloodLightSeoCatalog::productIntentSlug($product)) {
-            'outdoor-solar-flood-lights' => 'Outdoor compound, yard and parking-area lighting',
-            'motion-sensor-solar-lights' => 'Automatic security lighting for gates and walkways',
+            'solar-outdoor-lights' => 'Outdoor compound, yard and parking-area lighting',
+            'solar-motion-sensor-lights' => 'Automatic security lighting for gates and walkways',
             'solar-street-lights' => 'Road, estate, school and public-area lighting',
             'solar-security-lights' => 'Perimeter, CCTV-zone and commercial security lighting',
-            'solar-garden-wall-lights' => 'Pathway, wall, patio and decorative lighting',
-            'solar-panels-batteries' => 'Replacement power components for solar lighting systems',
-            'solar-lighting-accessories' => 'Mounting, cabling and installation support',
             default => 'Solar-powered outdoor flood lighting',
         };
     }
@@ -104,13 +103,10 @@ class ProductSeo
         }
 
         return match (SolarFloodLightSeoCatalog::productIntentSlug($product)) {
-            'outdoor-solar-flood-lights' => ['Home compounds and yards', 'Parking areas and shop fronts', 'Farm sheds and perimeter spaces'],
-            'motion-sensor-solar-lights' => ['Gate and doorway security', 'Walkways and stair areas', 'Energy-saving night lighting'],
+            'solar-outdoor-lights' => ['Home compounds and yards', 'Parking areas and shop fronts', 'Farm sheds and perimeter spaces'],
+            'solar-motion-sensor-lights' => ['Gate and doorway security', 'Walkways and stair areas', 'Energy-saving night lighting'],
             'solar-street-lights' => ['Estate roads and driveways', 'Schools, churches and public spaces', 'Parking yards and access roads'],
             'solar-security-lights' => ['Perimeter walls', 'CCTV blind spots', 'Commercial yards and loading areas'],
-            'solar-garden-wall-lights' => ['Gardens and patios', 'Wall-mounted accent lighting', 'Pathway and balcony lighting'],
-            'solar-panels-batteries' => ['Battery replacement', 'Panel replacement', 'Solar lighting maintenance'],
-            'solar-lighting-accessories' => ['Pole mounting', 'Bracket replacement', 'Cleaner installation runs'],
             default => ['Compound lighting', 'Outdoor security lighting', 'Off-grid lighting where grid power is unreliable'],
         };
     }

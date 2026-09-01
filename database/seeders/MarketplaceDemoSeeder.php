@@ -67,7 +67,7 @@ class MarketplaceDemoSeeder extends Seeder
 
         $samples = [
             [
-                'category' => 'Solar Flood Lights Price in Kenya',
+                'category' => 'solar-flood-lights',
                 'name' => '100W Solar Flood Light with Panel',
                 'model_number' => 'SFL-100W',
                 'brand' => 'SolarMax',
@@ -85,7 +85,7 @@ class MarketplaceDemoSeeder extends Seeder
                 'power_requirements' => 'Mount the solar panel where it receives direct sunlight for reliable charging and longer night runtime.',
             ],
             [
-                'category' => 'Solar Flood Lights Price in Kenya',
+                'category' => 'solar-flood-lights',
                 'name' => '200W Split Solar Flood Light with Remote',
                 'model_number' => 'SFL-200W-SPLIT',
                 'brand' => 'SolarMax',
@@ -103,7 +103,7 @@ class MarketplaceDemoSeeder extends Seeder
                 'choose_another_model' => 'Choose a lower wattage model for small gates and walkways, or a 300W plus model for wider commercial areas.',
             ],
             [
-                'category' => 'Outdoor Solar Flood Lights',
+                'category' => 'solar-outdoor-lights',
                 'name' => '300W Commercial Solar Flood Light',
                 'model_number' => 'SFL-300W-COM',
                 'brand' => 'BrightSun',
@@ -120,7 +120,7 @@ class MarketplaceDemoSeeder extends Seeder
                 'whats_in_box' => "300W solar flood light\nSolar panel\nRemote control\nMounting hardware",
             ],
             [
-                'category' => 'Motion Sensor Solar Lights',
+                'category' => 'solar-motion-sensor-lights',
                 'name' => '60W Motion Sensor Solar Security Light',
                 'model_number' => 'SSL-60W-PIR',
                 'brand' => 'Kenlight Solar',
@@ -137,7 +137,7 @@ class MarketplaceDemoSeeder extends Seeder
                 'whats_in_box' => "Motion sensor solar light\nMounting screws\nUser guide",
             ],
             [
-                'category' => 'Solar Street Lights',
+                'category' => 'solar-street-lights',
                 'name' => '90W All-in-One Solar Street Light',
                 'model_number' => 'SSL-90W-AIO',
                 'brand' => 'BrightSun',
@@ -154,7 +154,7 @@ class MarketplaceDemoSeeder extends Seeder
                 'whats_in_box' => "All-in-one street light\nMounting arm\nFasteners",
             ],
             [
-                'category' => 'Solar Security Lights',
+                'category' => 'solar-security-lights',
                 'name' => '500W High Mast Solar Security Flood Light',
                 'model_number' => 'SFL-500W-HM',
                 'brand' => 'SunGuard',
@@ -172,7 +172,7 @@ class MarketplaceDemoSeeder extends Seeder
                 'choose_another_model' => 'Choose 100W to 300W models for smaller compounds where high mast coverage is not required.',
             ],
             [
-                'category' => 'Solar Garden & Wall Lights',
+                'category' => 'solar-outdoor-lights',
                 'name' => 'Solar Garden Wall Light Pack of 4',
                 'model_number' => 'SGW-4PK',
                 'brand' => 'Kenlight Solar',
@@ -189,7 +189,7 @@ class MarketplaceDemoSeeder extends Seeder
                 'whats_in_box' => "4 solar wall lights\nMounting screws",
             ],
             [
-                'category' => 'Installation Accessories',
+                'category' => 'solar-flood-lights',
                 'name' => 'Solar Flood Light Mounting Pole Kit',
                 'model_number' => 'SFL-POLE-KIT',
                 'brand' => 'SunGuard',
@@ -208,7 +208,9 @@ class MarketplaceDemoSeeder extends Seeder
         ];
 
         foreach ($samples as $sample) {
-            $category = Category::where('name', $sample['category'])->first();
+            $category = Category::where('slug', $sample['category'])
+                ->orWhere('name', $sample['category'])
+                ->first();
             if (! $category) {
                 continue;
             }

@@ -12,14 +12,14 @@ class SeoMetadata
 {
     public static function homepageTitle(int $page = 1): string
     {
-        $title = 'Solar Flood Lights Kenya | Outdoor Security Lights & Solar Lighting';
+        $title = 'Solar Flood Lights Kenya | Best Prices & Fast Delivery';
 
         return $page > 1 ? $title.' - Page '.$page : $title;
     }
 
     public static function homepageDescription(): string
     {
-        return 'Shop solar flood lights in Kenya for homes, compounds, farms and businesses. Compare prices, wattage, battery capacity, stock availability and delivery options.';
+        return 'Shop solar flood lights in Kenya for homes, compounds, farms, security and business lighting. Compare prices, wattages and delivery options.';
     }
 
     public static function categoryTitle(Category $category, int $page = 1): string
@@ -95,6 +95,25 @@ class SeoMetadata
     public static function robots(object $model): ?string
     {
         return self::columnValue($model, 'robots');
+    }
+
+    public static function primaryKeyword(object $model): ?string
+    {
+        return self::columnValue($model, 'primary_keyword');
+    }
+
+    public static function schemaType(object $model): ?string
+    {
+        return self::columnValue($model, 'schema_type');
+    }
+
+    public static function sitemapEnabled(object $model): bool
+    {
+        if (! method_exists($model, 'getTable') || ! self::columnReady($model->getTable(), 'sitemap_enabled')) {
+            return true;
+        }
+
+        return $model->sitemap_enabled !== false && (string) $model->sitemap_enabled !== '0';
     }
 
     public static function openGraphTitle(object $model, string $fallback): string
