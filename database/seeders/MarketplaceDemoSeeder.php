@@ -9,6 +9,7 @@ use App\Models\ProductImage;
 use App\Models\Testimonial;
 use App\Models\User;
 use App\Models\Vendor;
+use App\Support\SolarFloodLightMediaCatalog;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -217,6 +218,7 @@ class MarketplaceDemoSeeder extends Seeder
 
             $existingProduct = Product::where('sku', $sample['sku'])->first();
             $slug = $existingProduct?->slug ?: $this->uniqueProductSlug($sample['name']);
+            $mediaUrl = SolarFloodLightMediaCatalog::productImageForSku($sample['sku']);
 
             $product = Product::updateOrCreate(
                 ['sku' => $sample['sku']],
@@ -243,6 +245,8 @@ class MarketplaceDemoSeeder extends Seeder
                     'warranty_info' => 'Warranty depends on supplier terms, battery type and installation conditions. Confirm coverage before checkout.',
                     'delivery_info' => 'Delivery is available within Kenya, with timelines confirmed by order size, stock location and destination.',
                     'payment_info' => 'Payment options are confirmed at checkout or through the seller before dispatch.',
+                    'official_image_url' => $mediaUrl,
+                    'official_gallery_images' => $mediaUrl ? [$mediaUrl] : null,
                     'faq_items' => [
                         [
                             'question' => 'Is '.$sample['name'].' available in Kenya?',
@@ -259,7 +263,7 @@ class MarketplaceDemoSeeder extends Seeder
             ProductImage::updateOrCreate(
                 ['product_id' => $product->id, 'is_primary' => true],
                 [
-                    'image_url' => 'assets/product-placeholder.svg',
+                    'image_url' => $mediaUrl ?: 'assets/product-placeholder.svg',
                     'sort_order' => 0,
                 ]
             );

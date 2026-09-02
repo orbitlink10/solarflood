@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             MarketplaceDemoSeeder::class,
             SeoArchitectureSeeder::class,
+            SolarFloodLightMediaSeeder::class,
         ]);
     }
 }
