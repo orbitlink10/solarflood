@@ -961,7 +961,8 @@ class AdminController extends Controller
             'title' => ['required', 'string', 'min:2', 'max:180'],
             'slug' => ['nullable', 'string', 'max:180', Rule::unique('pages', 'slug')->ignore($page?->id)],
             'image_url' => ['nullable', 'url', 'max:255'],
-            'alt_text' => ['nullable', 'string', 'min:2', 'max:255', 'required_with:image_url'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'alt_text' => ['nullable', 'string', 'min:2', 'max:255', 'required_with:image_url,image'],
             'heading_two' => ['required', 'string', 'min:2', 'max:180'],
             'type' => ['required', 'in:page,post'],
             'body' => ['required', 'string'],
@@ -1005,6 +1006,19 @@ class AdminController extends Controller
         ]);
     }
 
+    private function storePageImage(Request $request, ?string $existingImageUrl): ?string
+    {
+        if (! $request->hasFile('image')) {
+            return null;
+        }
+
+        if ($existingImageUrl) {
+            $this->deleteManagedUpload($existingImageUrl, '/uploads/pages/');
+        }
+
+        return $this->storeUploadedPublicFile($request->file('image'), 'uploads/pages');
+    }
+
     public function storePage(Request $request): RedirectResponse
     {
         if (! Page::storageReady()) {
@@ -1015,6 +1029,10 @@ class AdminController extends Controller
 
         $data = $this->validatePageData($request);
 
+        if ($uploadedImage = $this->storePageImage($request, null)) {
+            $data['image_url'] = $uploadedImage;
+        }
+
         $this->persistPage(new Page, $data);
 
         return redirect()->route('admin.pages.index')->with('success', 'Page saved successfully.');
@@ -1023,6 +1041,10 @@ class AdminController extends Controller
     public function updatePage(Request $request, Page $page): RedirectResponse
     {
         $data = $this->validatePageData($request, $page);
+
+        if ($uploadedImage = $this->storePageImage($request, $page->image_url)) {
+            $data['image_url'] = $uploadedImage;
+        }
 
         $this->persistPage($page, $data);
 

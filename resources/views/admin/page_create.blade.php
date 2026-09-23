@@ -33,7 +33,7 @@
                 </div>
             @endunless
 
-            <form class="admin-product-create-form" method="post" action="{{ $isEditingPage ? route('admin.pages.update', $pageToEdit) : route('admin.pages.store') }}">
+            <form class="admin-product-create-form" method="post" action="{{ $isEditingPage ? route('admin.pages.update', $pageToEdit) : route('admin.pages.store') }}" enctype="multipart/form-data">
                 @csrf
                 @if($isEditingPage)
                     @method('PUT')
@@ -306,6 +306,26 @@
                             placeholder="Enter image URL"
                             @disabled(! $pagesStorageReady)
                         >
+
+                        <div class="admin-product-field">
+                            <span class="admin-product-label">Upload Image</span>
+
+                            @if($pageToEdit?->image_url)
+                                <div class="admin-settings-preview">
+                                    <img src="{{ $pageToEdit->image_url }}" alt="{{ $pageToEdit->alt_text ?: $pageToEdit->title }}">
+                                </div>
+                            @endif
+
+                            <input
+                                class="admin-product-file"
+                                id="image"
+                                type="file"
+                                name="image"
+                                accept=".jpg,.jpeg,.png,.webp"
+                                @disabled(! $pagesStorageReady)
+                            >
+                            <p class="admin-product-optional-copy">Upload a photo from your device, or paste an image URL above.</p>
+                        </div>
 
                         <label class="admin-product-label" for="alt_text">Image Alt Text</label>
                         <input
